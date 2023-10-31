@@ -1,4 +1,5 @@
 using GO.Workerservice.Connection.Broker;
+using GO.Workerservice.Connection.Client;
 
 namespace GO.Workerservice
 {
@@ -6,12 +7,14 @@ namespace GO.Workerservice
     {
         private readonly ILogger<Worker> _logger;
         private readonly MBroker _broker;
+        private readonly MClient _client;
         private readonly DatabaseService? DatabaseService;
 
-        public Worker(ILogger<Worker> logger, MBroker broker)
+        public Worker(ILogger<Worker> logger, MBroker broker, MClient client)
         {
             _logger = logger;
             _broker = broker;
+            _client = client;
 
             ConfigurationReader reader = new();
             

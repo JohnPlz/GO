@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GO.Workerservice.Connection.Client
 {
-    internal class MClient
+    public class MClient
     {
         public event EventHandler<string> OnReceivingMessage;
         public event EventHandler ClientConnected;
