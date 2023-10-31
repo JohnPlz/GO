@@ -1,14 +1,17 @@
+using GO.Workerservice.Connection.Broker;
+
 namespace GO.Workerservice
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        private readonly MBroker _broker;
         private readonly DatabaseService? DatabaseService;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, MBroker broker)
         {
             _logger = logger;
-
+            _broker = broker;
 
             ConfigurationReader reader = new();
             
@@ -40,11 +43,15 @@ namespace GO.Workerservice
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            StartBroker();
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
             }
         }
+
+        private async void StartBroker() => await _broker.RunBrokerAsync();
     }
 }
