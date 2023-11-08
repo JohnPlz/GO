@@ -47,6 +47,8 @@ namespace GO.Workerservice
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             StartBroker();
+            await _client.Connect(stoppingToken);
+            _client.OnReceivingMessage += NewMessage;
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -54,6 +56,8 @@ namespace GO.Workerservice
                 await Task.Delay(TimeSpan.FromMinutes(30), stoppingToken);
             }
         }
+
+        private void NewMessage(object? sender, string e) => Console.WriteLine(e ?? "no message"); //<= zum testen
 
         private async void StartBroker() => await _broker.RunBrokerAsync();
     }

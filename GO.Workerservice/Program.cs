@@ -1,4 +1,5 @@
 using GO.Workerservice.Connection.Broker;
+using GO.Workerservice.Connection.Client;
 
 namespace GO.Workerservice
 {
@@ -10,6 +11,7 @@ namespace GO.Workerservice
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<MBroker>();
+                    services.AddScoped<MClient>();
                     services.AddHostedService<Worker>();
                 })
                 .Build();
