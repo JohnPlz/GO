@@ -85,7 +85,7 @@ public class DatabaseService
         }
     }
 
-    public void GetScan(string FreightLetterNumber) {
+    public async void GetScan(string FreightLetterNumber) {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -107,7 +107,7 @@ public class DatabaseService
 
         cmd.Parameters.Add(param);
 
-        cmd.ExecuteReader();
+        await cmd.ExecuteReaderAsync();
     }
 
     public async void AddScanAsync() {
@@ -129,7 +129,7 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public void Command4() {
+    public async void Command4() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -142,10 +142,10 @@ public class DatabaseService
                             and df_linnr=53
                             and df_scandat between current date-3 and current date;";
 
-        cmd.ExecuteReader();
+        await cmd.ExecuteReaderAsync();
     }
 
-    public void Command5() {
+    public async void Command5() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -155,11 +155,11 @@ public class DatabaseService
                             and df_datauftannahme='2019-02-12'
                             and df_lfdnrauftrag=551;";
 
-        cmd.ExecuteReader();
+        await cmd.ExecuteNonQueryAsync();
     }
 
 
-    public void Command6() {
+    public async void Command6() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -169,11 +169,11 @@ public class DatabaseService
                             and df_lfdnrauftrag=551
                             and df_lfdnrpack = 1;";
 
-        cmd.ExecuteReader();
+        await cmd.ExecuteReaderAsync();
     }
 
 
-    public void Command7() {
+    public async void Command7() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -183,10 +183,10 @@ public class DatabaseService
                             02-12',551,1,61,51,41, 25.510, '068007339524', current database, 'gomuc', 1, 'gofra',
                             current timestamp);";
 
-        cmd.ExecuteReader();
+        await cmd.ExecuteNonQueryAsync();
     }
 
-    public void Command8() {
+    public async void Command8() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -196,10 +196,10 @@ public class DatabaseService
                             and df_datauftannahme='2019-02-12'
                             and df_lfdnrauftrag=551;";
 
-        cmd.ExecuteReader();
+        await cmd.ExecuteReaderAsync();
     }
 
-    public void Command9() {
+    public async void Command9() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -209,10 +209,10 @@ public class DatabaseService
                             and df_datauftannahme='2019-02-12'
                             and df_lfdnrauftrag=551;";
 
-        cmd.ExecuteReader();
+        await cmd.ExecuteNonQueryAsync();
     }
 
-    public void Command10() {
+    public async void Command10() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -222,6 +222,6 @@ public class DatabaseService
                             and df_datauftannahme='2019-02-12'
                             and df_lfdnrauftrag=551;";
 
-        cmd.ExecuteReader();
+        await cmd.ExecuteNonQueryAsync();
     }
 }
