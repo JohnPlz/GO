@@ -11,7 +11,7 @@ namespace GO.Workerservice
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<MBroker>();
-                    services.AddScoped<MClient>();
+                    services.AddSingleton<MClient>();
                     services.AddHostedService<Worker>();
                 })
                 .Build();
