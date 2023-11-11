@@ -1,5 +1,6 @@
 using GO.Workerservice.Connection.Broker;
 using GO.Workerservice.Connection.Client;
+using Microsoft.Extensions.Hosting;
 
 namespace GO.Workerservice
 {
@@ -7,16 +8,25 @@ namespace GO.Workerservice
     {
         public static void Main(string[] args)
         {
-            IHost host = Host.CreateDefaultBuilder(args)
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                IHost host = Host.CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                 {
+                    services.AddWindowsService(options => options.ServiceName = "GOService");
                     services.AddSingleton<MBroker>();
                     services.AddSingleton<MClient>();
                     services.AddHostedService<Worker>();
                 })
                 .Build();
 
-            host.Run();
+                host.Run();
+            }
+            else
+            {
+                Environment.Exit(0); //logging?
+            }
+                
         }
     }
 }
