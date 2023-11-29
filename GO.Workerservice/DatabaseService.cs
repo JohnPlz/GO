@@ -43,7 +43,7 @@ public class DatabaseService
     }
 
 
-    public void GetOrder(string FreightLetterNumber) {
+    public void GetOrderAsync(string FreightLetterNumber) {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -85,7 +85,7 @@ public class DatabaseService
         }
     }
 
-    public async void GetScan(string FreightLetterNumber) {
+    public async void GetScanAsync(string FreightLetterNumber) {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -129,7 +129,7 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async void Command4() {
+    public async void GetWeightAsync() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -145,7 +145,7 @@ public class DatabaseService
         await cmd.ExecuteReaderAsync();
     }
 
-    public async void Command5() {
+    public async void UpdateOrderAsync() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
