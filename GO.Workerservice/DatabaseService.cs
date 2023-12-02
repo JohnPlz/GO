@@ -132,10 +132,11 @@ public class DatabaseService
                             df_dispoan, df_manuell, df_zieldb_auftraggeber, df_ndl, df_datauftannahme,
                             df_lfdnrauftrag, df_laenge, df_breite, df_hoehe)
                             VALUES
-                            ('FRA', 'MUC',53,'068007339524',1,'2019-02-
-                            15','18:01:28.328','TXL',30,'',0,'akl',15.50,'APA325','2019-02-15',current
-                            database,null,null,'RH6',null,'2019-02-15 18:01:28.328',0,'N',null,'TXL','2019-02-
-                            12',551,LENGTH,WIDTH,HEIGHT);";
+                            (DF_ABSTAT, DF_EMPFSTAT, DF_LINNR, DF_POD, DF_PACKNR, DF_SCANDAT, DF_SCANTIME,
+                            DF_SCANORT, DF_SCANANLASS, DF_ERRCODE, DF_PLATZNR, DF_USER, WEIGHT, DF_KFZNR,
+                            DF_DATSCHICHT, DF_ORIGDB, DF_ZIELDB, DF_ZIELDB1, DF_HUB, DF_ZIELDB2, DF_TIMESTAMP,
+                            DF_DISPOAN, DF_MANUELL, DF_ZIELDB_AUFTRAGGEBER, DF_NDL, DF_DATAUFTANNAHME,
+                            DF_LFGNRAUFTRAG, LENGTH, WIDTH, HEIGHT);";
 
         OdbcParameter weightParam = new()
         {
