@@ -386,7 +386,7 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async void UpdateOrderWeightAsync(int weight, string scanLocation, string date, string orderNumber) // 11
+    public async Task UpdateOrderWeightAsync(int weight, string scanLocation, string date, string orderNumber) // 11
     {
         if (this.Connection == null) return;
 

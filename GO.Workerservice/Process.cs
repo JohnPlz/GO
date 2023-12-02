@@ -38,11 +38,11 @@ public class Process
             {
                 await DatabaseService.AddScanAsync(scaleDimensionerResult, packageData); // 3
 
-                int? weight = await DatabaseService.GetWeightAsync(); // 4
+                int? realWeight = await DatabaseService.GetWeightAsync(); // 4
 
-                if (weight == null) return;
+                if (realWeight == null) return;
 
-                await DatabaseService.UpdateWeightAsync((int) weight, scanLocation, date, orderNumber); // 5
+                await DatabaseService.UpdateWeightAsync((int) realWeight, scanLocation, date, orderNumber); // 5
 
                 bool? packageExists = await DatabaseService.DoesPackageExistAsync(scanLocation, date, orderNumber); // 6
 
@@ -60,14 +60,21 @@ public class Process
 
                 await this.DatabaseService.CreatePackageAsync(packageData, scaleDimensionerResult, volumeFactor); // 8
 
-                int? totalWeight = await this.DatabaseService.GetTotalWeightAsync(packageData.df_ndl,   // 9
+                int? volumeWeight = await this.DatabaseService.GetTotalWeightAsync(packageData.df_ndl,   // 9
                                                                                   packageData.df_datauftannahme, 
                                                                                   packageData.df_lfdnrauftrag);
 
-                if (totalWeight == null) return;
+                if (volumeWeight == null) return;
 
-                await this.DatabaseService.UpdateTotalWeightAsync((int) totalWeight, scanLocation, date, orderNumber);
+                await this.DatabaseService.UpdateTotalWeightAsync((int) volumeWeight, scanLocation, date, orderNumber);
 
+                int weight = (int) realWeight;
+
+                if (packageData.df_ndl == this.Configuration.ScanLocation && volumeWeight > realWeight) {
+                    weight = (int) volumeWeight;
+                } 
+
+                await this.DatabaseService.UpdateOrderWeightAsync((int) realWeight, scanLocation, date, orderNumber);
             } 
             else
             {
@@ -76,7 +83,7 @@ public class Process
         }
         catch (OdbcException e) 
         {
-
+            Console.WriteLine(e.StackTrace);
         }
 
     }
