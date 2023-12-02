@@ -58,6 +58,16 @@ public class Process
                     volumeFactor = this.Configuration.DefaultVolumeFactor;
                 }
 
+                await this.DatabaseService.CreatePackageAsync(packageData, scaleDimensionerResult, volumeFactor); // 8
+
+                int? totalWeight = await this.DatabaseService.GetTotalWeightAsync(packageData.df_ndl,   // 9
+                                                                                  packageData.df_datauftannahme, 
+                                                                                  packageData.df_lfdnrauftrag);
+
+                if (totalWeight == null) return;
+
+                await this.DatabaseService.UpdateTotalWeightAsync((int) totalWeight, scanLocation, date, orderNumber);
+
             } 
             else
             {

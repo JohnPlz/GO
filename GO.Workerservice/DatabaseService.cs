@@ -283,7 +283,8 @@ public class DatabaseService
     }
 
 
-    public async void CreatePackageAsync() {
+    public async Task CreatePackageAsync(PackageData data, ScaleDimensionerResult scaleDimensionerResult, float volumeFactor) // 8
+    {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -296,7 +297,8 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async Task<int?> GetTotalWeightAsync(string scanLocation, string date, string orderNumber) {
+    public async Task<int?> GetTotalWeightAsync(string scanLocation, string date, string orderNumber) // 9
+    {
         if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -337,7 +339,8 @@ public class DatabaseService
         return 0;
     }
 
-    public async void UpdateOrderVolumeAsync(string volume, string scanLocation, string date, string orderNumber) {
+    public async Task UpdateTotalWeightAsync(int totalweight, string scanLocation, string date, string orderNumber) // 10
+    {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -347,35 +350,35 @@ public class DatabaseService
                             and df_datauftannahme='DATE'
                             and df_lfdnrauftrag=ORDERNUMBER;";
 
-        OdbcParameter volumeParam = new()
+        OdbcParameter totalWeightParam = new()
         {
             ParameterName = "@WEIGHT",
             DbType = System.Data.DbType.VarNumeric,
-            Value = volume
+            Value = totalweight
         };
 
         OdbcParameter scanLocationParam = new()
         {
             ParameterName = "@SCANLOCATION",
-            DbType = System.Data.DbType.VarNumeric,
+            DbType = System.Data.DbType.String,
             Value = scanLocation
         };
 
         OdbcParameter dateParam = new()
         {
             ParameterName = "@DATE",
-            DbType = System.Data.DbType.VarNumeric,
+            DbType = System.Data.DbType.String,
             Value = date
         };
 
         OdbcParameter orderNumberParam = new()
         {
             ParameterName = "@ORDERNUMBER",
-            DbType = System.Data.DbType.VarNumeric,
+            DbType = System.Data.DbType.String,
             Value = orderNumber
         };
 
-        cmd.Parameters.Add(volumeParam);
+        cmd.Parameters.Add(totalWeightParam);
         cmd.Parameters.Add(scanLocationParam);
         cmd.Parameters.Add(dateParam);
         cmd.Parameters.Add(orderNumberParam);
@@ -383,7 +386,8 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async void UpdateOrderWeightAsync(int weight, string scanLocation, string date, string orderNumber) {
+    public async void UpdateOrderWeightAsync(int weight, string scanLocation, string date, string orderNumber) // 11
+    {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
