@@ -43,8 +43,8 @@ public class DatabaseService
     }
 
 
-    public void GetOrderAsync(string FreightLetterNumber) {
-        if (this.Connection == null) return;
+    public async Task<PackageData>? GetOrderAsync(string FreightLetterNumber) {
+        if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"SELECT FIRST *,
@@ -68,6 +68,8 @@ public class DatabaseService
 
         cmd.Parameters.Add(param);
 
+        PackageData packageData = null;
+
         using (OdbcDataReader reader = cmd.ExecuteReader())
         {
             if (reader.HasRows)
@@ -83,10 +85,12 @@ public class DatabaseService
             }
             reader.Close();
         }
+
+        return packageData;
     }
 
-    public async void GetScanAsync(string FreightLetterNumber) {
-        if (this.Connection == null) return;
+    public async Task<ScanData?> GetScanAsync(string FreightLetterNumber) {
+        if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"SELECT * FROM DBA.TB_SCAN
@@ -107,10 +111,14 @@ public class DatabaseService
 
         cmd.Parameters.Add(param);
 
+        ScanData scanData = null;
+
         await cmd.ExecuteReaderAsync();
+
+        return scanData;
     }
 
-    public async void AddScanAsync() {
+    public async Task AddScanAsync(ScaleDimensionerResult scaleDimensionerResult, PackageData packageData) {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -124,13 +132,46 @@ public class DatabaseService
                             ('FRA', 'MUC',53,'068007339524',1,'2019-02-
                             15','18:01:28.328','TXL',30,'',0,'akl',15.50,'APA325','2019-02-15',current
                             database,null,null,'RH6',null,'2019-02-15 18:01:28.328',0,'N',null,'TXL','2019-02-
-                            12',551,61,51,41);";
+                            12',551,LENGTH,WIDTH,HEIGHT);";
+
+        OdbcParameter weightParam = new()
+        {
+            ParameterName = "@WEIGHT",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = scaleDimensionerResult.Weight
+        };
+
+        OdbcParameter lengthParam = new()
+        {
+            ParameterName = "@LENGTH",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = scaleDimensionerResult.Length
+        };
+
+        OdbcParameter widthParam = new()
+        {
+            ParameterName = "@WIDTH",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = scaleDimensionerResult.Width
+        };
+
+        OdbcParameter heightParam = new()
+        {
+            ParameterName = "@HEIGTH",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = scaleDimensionerResult.Height
+        };
+
+        cmd.Parameters.Add(weightParam);
+        cmd.Parameters.Add(lengthParam);
+        cmd.Parameters.Add(widthParam);
+        cmd.Parameters.Add(heightParam);
 
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async void GetWeightAsync() {
-        if (this.Connection == null) return;
+    public async Task<int?> GetWeightAsync() {
+        if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"SELECT SUM(df_gewicht) AS totalweight
@@ -143,37 +184,97 @@ public class DatabaseService
                             and df_scandat between current date-3 and current date;";
 
         await cmd.ExecuteReaderAsync();
+
+        return 0;
     }
 
-    public async void UpdateOrderAsync() {
+    public async void UpdateWeightAsync(int weight, string scanLocation, string date, string orderNumber) {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"UPDATE DBA.TB_AUFTRAG
-                            SET df_real_kg = 15.500
-                            WHERE df_ndl='TXL'
-                            and df_datauftannahme='2019-02-12'
-                            and df_lfdnrauftrag=551;";
+                            SET df_real_kg = WEIGHT
+                            WHERE df_ndl='SCANLOCATION'
+                            and df_datauftannahme='DATE'
+                            and df_lfdnrauftrag=ORDERNUMBER;";
+
+        OdbcParameter weightParam = new()
+        {
+            ParameterName = "@WEIGHT",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = weight
+        };
+
+        OdbcParameter scanLocationParam = new()
+        {
+            ParameterName = "@SCANLOCATION",
+            DbType = System.Data.DbType.String,
+            Value = scanLocation
+        };
+
+        OdbcParameter dateParam = new()
+        {
+            ParameterName = "@DATE",
+            DbType = System.Data.DbType.String,
+            Value = date
+        };
+
+        OdbcParameter orderNumberParam = new()
+        {
+            ParameterName = "@ORDERNUMBER",
+            DbType = System.Data.DbType.String,
+            Value = orderNumber
+        };
+
+        cmd.Parameters.Add(weightParam);
+        cmd.Parameters.Add(scanLocationParam);
+        cmd.Parameters.Add(dateParam);
+        cmd.Parameters.Add(orderNumberParam);
 
         await cmd.ExecuteNonQueryAsync();
     }
 
 
-    public async void Command6() {
+    public async void GetPackageAsync(string scanLocation, string date, string orderNumber) {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"SELECT * FROM DBA.TB_AUFTRAGSPACKSTUECK
-                            where df_ndl='TXL'
-                            and df_datauftannahme='2019-02-12'
-                            and df_lfdnrauftrag=551
+                            where df_ndl='SCANLOCATION'
+                            and df_datauftannahme='DATE'
+                            and df_lfdnrauftrag=ORDERNUMBER
                             and df_lfdnrpack = 1;";
+
+        OdbcParameter scanLocationParam = new()
+        {
+            ParameterName = "@SCANLOCATION",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = scanLocation
+        };
+
+        OdbcParameter dateParam = new()
+        {
+            ParameterName = "@DATE",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = date
+        };
+
+        OdbcParameter orderNumberParam = new()
+        {
+            ParameterName = "@ORDERNUMBER",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = orderNumber
+        };
+
+        cmd.Parameters.Add(scanLocationParam);
+        cmd.Parameters.Add(dateParam);
+        cmd.Parameters.Add(orderNumberParam);
 
         await cmd.ExecuteReaderAsync();
     }
 
 
-    public async void Command7() {
+    public async void CreatePackageAsync() {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -186,41 +287,135 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async void Command8() {
-        if (this.Connection == null) return;
+    public async Task<int?> GetTotalWeightAsync(string scanLocation, string date, string orderNumber) {
+        if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"SELECT SUM(df_volkg) AS totalvolumeweight
                             FROM DBA.TB_AUFTRAGSPACKSTUECK
-                            where df_ndl='TXL'
-                            and df_datauftannahme='2019-02-12'
-                            and df_lfdnrauftrag=551;";
+                            where df_ndl='SCANLOCATION'
+                            and df_datauftannahme='DATE'
+                            and df_lfdnrauftrag=ORDERNUMBER;";
+
+
+        OdbcParameter scanLocationParam = new()
+        {
+            ParameterName = "@SCANLOCATION",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = scanLocation
+        };
+
+        OdbcParameter dateParam = new()
+        {
+            ParameterName = "@DATE",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = date
+        };
+
+        OdbcParameter orderNumberParam = new()
+        {
+            ParameterName = "@ORDERNUMBER",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = orderNumber
+        };
+
+        cmd.Parameters.Add(scanLocationParam);
+        cmd.Parameters.Add(dateParam);
+        cmd.Parameters.Add(orderNumberParam);
 
         await cmd.ExecuteReaderAsync();
+
+        return 0;
     }
 
-    public async void Command9() {
+    public async void UpdateOrderVolumeAsync(string volume, string scanLocation, string date, string orderNumber) {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"UPDATE DBA.TB_AUFTRAG
-                            SET df_volkg = 25.510
-                            WHERE df_ndl='TXL'
-                            and df_datauftannahme='2019-02-12'
-                            and df_lfdnrauftrag=551;";
+                            SET df_volkg = VOLUME
+                            WHERE df_ndl='SCANLOCATION'
+                            and df_datauftannahme='DATE'
+                            and df_lfdnrauftrag=ORDERNUMBER;";
+
+        OdbcParameter volumeParam = new()
+        {
+            ParameterName = "@WEIGHT",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = volume
+        };
+
+        OdbcParameter scanLocationParam = new()
+        {
+            ParameterName = "@SCANLOCATION",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = scanLocation
+        };
+
+        OdbcParameter dateParam = new()
+        {
+            ParameterName = "@DATE",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = date
+        };
+
+        OdbcParameter orderNumberParam = new()
+        {
+            ParameterName = "@ORDERNUMBER",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = orderNumber
+        };
+
+        cmd.Parameters.Add(volumeParam);
+        cmd.Parameters.Add(scanLocationParam);
+        cmd.Parameters.Add(dateParam);
+        cmd.Parameters.Add(orderNumberParam);
 
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async void Command10() {
+    public async void UpdateOrderWeightAsync(int weight, string scanLocation, string date, string orderNumber) {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"UPDATE DBA.TB_AUFTRAG
-                            SET df__kg = ERMITTELTES_GEWICHT
-                            WHERE df_ndl='TXL'
-                            and df_datauftannahme='2019-02-12'
-                            and df_lfdnrauftrag=551;";
+                            SET df__kg = WEIGHT
+                            WHERE df_ndl='SCANLOCATION'
+                            and df_datauftannahme='DATE'
+                            and df_lfdnrauftrag=ORDERNUMBER;";
+
+        OdbcParameter weightParam = new()
+        {
+            ParameterName = "@WEIGHT",
+            DbType = System.Data.DbType.VarNumeric,
+            Value = weight
+        };
+
+        OdbcParameter scanLocationParam = new()
+        {
+            ParameterName = "@SCANLOCATION",
+            DbType = System.Data.DbType.String,
+            Value = scanLocation
+        };
+
+        OdbcParameter dateParam = new()
+        {
+            ParameterName = "@DATE",
+            DbType = System.Data.DbType.String,
+            Value = date
+        };
+
+        OdbcParameter orderNumberParam = new()
+        {
+            ParameterName = "@ORDERNUMBER",
+            DbType = System.Data.DbType.String,
+            Value = orderNumber
+        };
+
+        cmd.Parameters.Add(weightParam);
+        cmd.Parameters.Add(scanLocationParam);
+        cmd.Parameters.Add(dateParam);
+        cmd.Parameters.Add(orderNumberParam);
 
         await cmd.ExecuteNonQueryAsync();
     }
