@@ -10,6 +10,10 @@ namespace GO.Workerservice
         private readonly MClient _client;
         private readonly DatabaseService? DatabaseService;
 
+        private readonly string ScanLocation;
+
+        private readonly List<Dictionary<string, float>> ExceptionList;
+
         public Worker(ILogger<Worker> logger, MBroker broker, MClient client)
         {
             _logger = logger;
@@ -41,7 +45,7 @@ namespace GO.Workerservice
             );
 
             this.DatabaseService = new(configuration!.DatabaseConfiguration, this._logger);
-            //this.DatabaseService?.Connect();
+            this.DatabaseService?.Connect();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

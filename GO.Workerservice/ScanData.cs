@@ -1,47 +1,45 @@
 namespace GO.Workerservice;
 
-public class PackageData 
+public class ScanData 
 {
-    public string df_abstat;
-    public string df_empfstat; 
-    public string df_linnr;
-    public string df_pod;
-    public string df_packnr;
-    public string df_scandat;
-    public string df_scantime;                           
-    public string df_scanort;
-    public string df_scananlass;
-    public string df_errcode;
-    public string df_platznr;
-    public string df_user;
-    public string df_gewicht;
-    public string df_kfznr;
-    public string df_datschicht;
-    public string df_origdb;
-    public string df_zieldb; 
-    public string df_zieldb1;
-    public string df_hub;
-    public string df_zieldb2;
-    public string df_timestamp;
-    public string df_dispoan;
-    public string df_manuell;
-    public string df_zieldb_auftraggeber;
-    public string df_ndl;
-    public string df_datauftannahme;
-    public string df_lfdnrauftrag;
-    public string df_laenge; 
-    public string df_breite; 
-    public string df_hoehe;
+    private string df_abstat;
+    private string df_empfstat; 
+    private string df_linnr;
+    private string df_pod;
+    private string df_packnr;
+    private string df_scandat;
+    private string df_scantime;                           
+    private string df_scanort;
+    private string df_scananlass;
+    private string df_errcode;
+    private string df_platznr;
+    private string df_user;
+    private string df_gewicht;
+    private string df_kfznr;
+    private string df_datschicht;
+    private string df_origdb;
+    private string df_zieldb; 
+    private string df_zieldb1;
+    private string df_hub;
+    private string df_zieldb2;
+    private string df_timestamp;
+    private string df_dispoan;
+    private string df_manuell;
+    private string df_zieldb_auftraggeber;
+    private string df_ndl;
+    private string df_datauftannahme;
+    private string df_lfdnrauftrag;
+    private string df_laenge; 
+    private string df_breite; 
+    private string df_hoehe;
 
-    public string df_kundennr;
-
-    public PackageData(string df_abstat, string df_empfstat, string df_linnr, string df_pod, string df_packnr, 
+    public ScanData(string df_abstat, string df_empfstat, string df_linnr, string df_pod, string df_packnr, 
                        string df_scandat, string df_scantime, string df_scanort, string df_scananlass, string df_errcode, 
                        string df_platznr, string df_user, string df_gewicht, string df_kfznr, string df_datschicht, 
                        string df_origdb, string df_zieldb, string df_zieldb1, string df_hub, string df_zieldb2, 
                        string df_timestamp, string df_dispoan, string df_manuell, string df_zieldb_auftraggeber, 
                        string df_ndl, string df_datauftannahme, string df_lfdnrauftrag, string df_laenge, string df_breite, 
-                       string df_hoehe, string df_kundennr)
+                       string df_hoehe)
     {
         this.df_abstat = df_abstat;
         this.df_empfstat = df_empfstat;
@@ -73,6 +71,5 @@ public class PackageData
         this.df_laenge = df_laenge;
         this.df_breite = df_breite;
         this.df_hoehe = df_hoehe;
-        this.df_kundennr = df_kundennr;
     }
 }

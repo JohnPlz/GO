@@ -8,8 +8,11 @@ public class Process
     private DatabaseService DatabaseService;
     private ScaleDimensionerResult ScaleDimensionerResult;
 
-    public Process(DatabaseService databaseService, ScaleDimensionerResult scaleDimensionerResult) 
+    private Configuration Configuration;
+
+    public Process(Configuration configuration, DatabaseService databaseService, ScaleDimensionerResult scaleDimensionerResult) 
     {
+        this.Configuration = configuration;
         this.DatabaseService = databaseService;
         this.ScaleDimensionerResult = scaleDimensionerResult;
     }
@@ -21,23 +24,39 @@ public class Process
         try 
         {
             string freightLetterNumber = this.ScaleDimensionerResult.Barcode;
-            PackageData packageData = await DatabaseService.GetOrderAsync(freightLetterNumber);
+            PackageData packageData = await DatabaseService.GetOrderAsync(freightLetterNumber); // 1
 
             if (packageData == null) return;
 
-            ScanData scanData = await DatabaseService.GetScanAsync(freightLetterNumber);
+            ScanData scanData = await DatabaseService.GetScanAsync(freightLetterNumber); // 2
 
-            string scanLocation;
-            string date;
-            string orderNumber;
+            string scanLocation = packageData.df_ndl;
+            string date = packageData.df_datauftannahme;
+            string orderNumber = packageData.df_lfdnrauftrag;
 
             if (scanData == null)
             {
-                await DatabaseService.AddScanAsync(scaleDimensionerResult, packageData);
+                await DatabaseService.AddScanAsync(scaleDimensionerResult, packageData); // 3
 
-                int? weight = await DatabaseService.GetWeightAsync();
+                int? weight = await DatabaseService.GetWeightAsync(); // 4
 
-                await DatabaseService.UpdateWeightAsync(weight, scanLocation, date, orderNumber);
+                if (weight == null) return;
+
+                await DatabaseService.UpdateWeightAsync((int) weight, scanLocation, date, orderNumber); // 5
+
+                bool? packageExists = await DatabaseService.DoesPackageExistAsync(scanLocation, date, orderNumber); // 6
+
+                if (packageExists == null) return;
+
+                float volumeFactor;
+
+                if (packageData.df_ndl == this.Configuration.ScanLocation // 7
+                    && this.Configuration.ExceptionList!.ContainsKey(packageData.df_kundennr)) 
+                {
+                    volumeFactor = this.Configuration.ExceptionList[packageData.df_kundennr];
+                } else {
+                    volumeFactor = this.Configuration.DefaultVolumeFactor;
+                }
 
             } 
             else

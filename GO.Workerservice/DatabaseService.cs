@@ -43,7 +43,8 @@ public class DatabaseService
     }
 
 
-    public async Task<PackageData>? GetOrderAsync(string FreightLetterNumber) {
+    public async Task<PackageData>? GetOrderAsync(string FreightLetterNumber) // 1
+    {
         if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -89,7 +90,8 @@ public class DatabaseService
         return packageData;
     }
 
-    public async Task<ScanData?> GetScanAsync(string FreightLetterNumber) {
+    public async Task<ScanData?> GetScanAsync(string FreightLetterNumber) // 2
+    {
         if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -118,7 +120,8 @@ public class DatabaseService
         return scanData;
     }
 
-    public async Task AddScanAsync(ScaleDimensionerResult scaleDimensionerResult, PackageData packageData) {
+    public async Task AddScanAsync(ScaleDimensionerResult scaleDimensionerResult, PackageData packageData) // 3
+    {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -170,7 +173,8 @@ public class DatabaseService
         await cmd.ExecuteNonQueryAsync();
     }
 
-    public async Task<int?> GetWeightAsync() {
+    public async Task<int?> GetWeightAsync() // 4
+    {
         if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -188,7 +192,8 @@ public class DatabaseService
         return 0;
     }
 
-    public async void UpdateWeightAsync(int weight, string scanLocation, string date, string orderNumber) {
+    public async Task UpdateWeightAsync(int weight, string scanLocation, string date, string orderNumber) // 5
+    {
         if (this.Connection == null) return;
 
         OdbcCommand cmd = Connection.CreateCommand();
@@ -235,8 +240,9 @@ public class DatabaseService
     }
 
 
-    public async void GetPackageAsync(string scanLocation, string date, string orderNumber) {
-        if (this.Connection == null) return;
+    public async Task<bool?> DoesPackageExistAsync(string scanLocation, string date, string orderNumber) // 6
+    {
+        if (this.Connection == null) return null;
 
         OdbcCommand cmd = Connection.CreateCommand();
         cmd.CommandText = @"SELECT * FROM DBA.TB_AUFTRAGSPACKSTUECK
@@ -270,7 +276,10 @@ public class DatabaseService
         cmd.Parameters.Add(dateParam);
         cmd.Parameters.Add(orderNumberParam);
 
-        await cmd.ExecuteReaderAsync();
+        using (OdbcDataReader reader = cmd.ExecuteReader())
+        {
+            return reader.HasRows;
+        }
     }
 
 
