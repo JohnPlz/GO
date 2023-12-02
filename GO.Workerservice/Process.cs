@@ -66,7 +66,7 @@ public class Process
 
                 if (volumeWeight == null) return;
 
-                await this.DatabaseService.UpdateTotalWeightAsync((int) volumeWeight, scanLocation, date, orderNumber);
+                await this.DatabaseService.UpdateTotalWeightAsync((int) volumeWeight, scanLocation, date, orderNumber); // 10
 
                 int weight = (int) realWeight;
 
@@ -74,7 +74,7 @@ public class Process
                     weight = (int) volumeWeight;
                 } 
 
-                await this.DatabaseService.UpdateOrderWeightAsync((int) realWeight, scanLocation, date, orderNumber);
+                await this.DatabaseService.UpdateOrderWeightAsync((int) realWeight, scanLocation, date, orderNumber); // 11
             } 
             else
             {
