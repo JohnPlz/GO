@@ -38,10 +38,11 @@ namespace GO.Workerservice
             this._logger.LogDebug(
                 "DatabaseConfiguration: \n\t" +
                 $"Host: {configuration!.DatabaseConfiguration.Host} \n\t" +
-                $"Port: {configuration!.DatabaseConfiguration.Port} \n\t" +
                 $"Username: {configuration!.DatabaseConfiguration.Username} \n\t" +
                 $"Password: {displayPassword} \n\t" +
-                $"Database: {configuration!.DatabaseConfiguration.Database} \n"
+                $"Database: {configuration!.DatabaseConfiguration.Database} \n" +
+                $"Driver: {configuration!.DatabaseConfiguration.Driver} \n" +
+                $"EngineName: {configuration!.DatabaseConfiguration.EngineName} \n"
             );
 
             this.DatabaseService = new(configuration!.DatabaseConfiguration, this._logger);

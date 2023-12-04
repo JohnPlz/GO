@@ -34,6 +34,9 @@ public class PackageData
     public string df_hoehe;
 
     public string df_kundennr;
+    public string df_lfdnrpack;
+    public string df_hwb_nr;
+    public string df_replikation;
 
     public PackageData(string df_abstat, string df_empfstat, string df_linnr, string df_pod, string df_packnr, 
                        string df_scandat, string df_scantime, string df_scanort, string df_scananlass, string df_errcode, 
@@ -41,7 +44,7 @@ public class PackageData
                        string df_origdb, string df_zieldb, string df_zieldb1, string df_hub, string df_zieldb2, 
                        string df_timestamp, string df_dispoan, string df_manuell, string df_zieldb_auftraggeber, 
                        string df_ndl, string df_datauftannahme, string df_lfdnrauftrag, string df_laenge, string df_breite, 
-                       string df_hoehe, string df_kundennr)
+                       string df_hoehe, string df_kundennr, string df_lfdnrpack, string df_hwb_nr, string df_replikation)
     {
         this.df_abstat = df_abstat;
         this.df_empfstat = df_empfstat;
@@ -74,5 +77,8 @@ public class PackageData
         this.df_breite = df_breite;
         this.df_hoehe = df_hoehe;
         this.df_kundennr = df_kundennr;
+        this.df_lfdnrpack = df_lfdnrpack;
+        this.df_hwb_nr = df_hwb_nr;
+        this.df_replikation = df_replikation;
     }
 }
